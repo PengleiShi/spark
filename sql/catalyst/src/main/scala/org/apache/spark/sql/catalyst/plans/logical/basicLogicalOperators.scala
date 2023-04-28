@@ -1856,6 +1856,20 @@ case class RebalancePartitions(
     copy(child = newChild)
 }
 
+case class RebalanceBuckets(
+    partitionExpressions: Seq[Expression],
+    child: LogicalPlan,
+    optNumPartitions: Option[Int] = None) extends UnaryNode with HasPartitionExpressions {
+  override def maxRows: Option[Long] = child.maxRows
+  override def output: Seq[Attribute] = child.output
+  override val nodePatterns: Seq[TreePattern] = Seq(REBALANCE_BUCKETS)
+
+  override val partitioning: Partitioning = super.partitioning
+
+  override protected def withNewChildInternal(newChild: LogicalPlan): RebalanceBuckets =
+    copy(child = newChild)
+}
+
 /**
  * A relation with one row. This is used in "SELECT ..." without a from clause.
  */

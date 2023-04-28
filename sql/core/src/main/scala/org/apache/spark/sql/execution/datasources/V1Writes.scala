@@ -177,8 +177,10 @@ object V1WritesUtils {
     } else {
       // We should first sort by dynamic partition columns, then bucket id, and finally sorting
       // columns.
-      (dynamicPartitionColumns ++ writerBucketSpec.map(_.bucketIdExpression) ++ sortColumns)
-        .map(SortOrder(_, Ascending))
+      // (dynamicPartitionColumns ++ writerBucketSpec.map(_.bucketIdExpression) ++ sortColumns)
+      // We have repartition data by bucket id, so it's unnecessary to sort by bucketIdExpression
+      // todo if no rebalance, sort by bucketIdExpression is necessary
+      (dynamicPartitionColumns ++ sortColumns).map(SortOrder(_, Ascending))
     }
   }
 

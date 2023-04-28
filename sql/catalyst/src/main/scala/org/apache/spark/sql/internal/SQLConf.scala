@@ -832,6 +832,22 @@ object SQLConf {
       .checkValue(v => v > 0 && v < 1, "the factor must be in (0, 1)")
       .createWithDefault(0.2)
 
+  val ADAPTIVE_OPTIMIZE_BUCKET_PARTITIONING_ENABLED =
+    buildConf("spark.sql.adaptive.optimizePartitioningInRebalancePartitions.enabled")
+      .doc(s"When true and '${ADAPTIVE_EXECUTION_ENABLED.key}' is true, Spark will optimize the " +
+        "shuffle hash partitioning in RebalancePartitions for bucket table insert, " +
+        "to avoid small files")
+      .booleanConf
+      .createWithDefault(false)
+
+  val ADVISORY_BUCKET_SIZE_IN_BYTES =
+    buildConf("spark.sql.adaptive.advisoryBucketSizeInBytes")
+      .doc("The advisory size in bytes of the shuffle partition during adaptive optimization " +
+        s"(when ${ADAPTIVE_EXECUTION_ENABLED.key} is true). )")
+      .bytesConf(ByteUnit.BYTE)
+      .checkValue(_ > 0, "advisoryBucketSizeInBytes must be positive")
+      .createWithDefaultString("64MB")
+
   val ADAPTIVE_FORCE_OPTIMIZE_SKEWED_JOIN =
     buildConf("spark.sql.adaptive.forceOptimizeSkewedJoin")
       .doc("When true, force enable OptimizeSkewedJoin even if it introduces extra shuffle.")

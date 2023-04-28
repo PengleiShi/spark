@@ -889,6 +889,9 @@ abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           REBALANCE_PARTITIONS_BY_COL
         }
         exchange.ShuffleExchangeExec(r.partitioning, planLater(r.child), shuffleOrigin) :: Nil
+      case r: logical.RebalanceBuckets =>
+        exchange.ShuffleExchangeExec(r.partitioning, planLater(r.child),
+          REBALANCE_PARTITIONS_BY_COL) :: Nil
       case ExternalRDD(outputObjAttr, rdd) => ExternalRDDScanExec(outputObjAttr, rdd) :: Nil
       case r: LogicalRDD =>
         RDDScanExec(r.output, r.rdd, "ExistingRDD", r.outputPartitioning, r.outputOrdering) :: Nil

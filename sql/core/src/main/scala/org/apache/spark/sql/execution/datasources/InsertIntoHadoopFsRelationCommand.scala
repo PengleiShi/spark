@@ -201,6 +201,12 @@ case class InsertIntoHadoopFsRelationCommand(
         refreshUpdatedPartitions(updatedPartitionPaths)
       }
 
+      // update bucket num
+      if (catalogTable.isDefined) {
+        AlterTableSetPropertiesCommand(
+          catalogTable.get.identifier, Map("autoBucket" ->"false"), false).run(sparkSession)
+      }
+
       // refresh cached files in FileIndex
       fileIndex.foreach(_.refresh())
       // refresh data cache if table is cached

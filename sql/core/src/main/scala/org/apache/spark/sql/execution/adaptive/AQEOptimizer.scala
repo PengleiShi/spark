@@ -42,7 +42,8 @@ class AQEOptimizer(conf: SQLConf, extendedRuntimeOptimizerRules: Seq[Rule[Logica
       UpdateAttributeNullability),
     Batch("Dynamic Join Selection", Once, DynamicJoinSelection),
     Batch("Eliminate Limits", fixedPoint, EliminateLimits),
-    Batch("Optimize One Row Plan", fixedPoint, OptimizeOneRowPlan)) :+
+    Batch("Optimize One Row Plan", fixedPoint, OptimizeOneRowPlan),
+    Batch("Optimize shuffle partitioning", Once, OptimizeShufflePartitioningForBucket)) :+
     Batch("User Provided Runtime Optimizers", fixedPoint, extendedRuntimeOptimizerRules: _*)
 
   final override protected def batches: Seq[Batch] = {
